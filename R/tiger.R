@@ -3,19 +3,22 @@
 # tiger(): The user interface for tiger()                                          #
 # Author: Xingguo Li                                                               #
 # Email: <xingguo.leo@gmail.com>                                                   #
-# Date: July 27th 2012                                                             #
-# Version: 0.9                                                                     #
+# Date: Aug 3rd, 2012                                                              #
+# Version: 0.9.2                                                                   #
 #----------------------------------------------------------------------------------#
 
-tiger <- function(data, 
-                 lambda = NULL,
-                 nlambda = NULL, 
-                 lambda.min.ratio = NULL,
-                 rho = NULL,
-                 method = "clime", 
-                 sym = "or",
-                 verbose = TRUE,
-                 prec = 1e-3)
+tiger <- function(data,
+                  lambda = NULL,
+                  nlambda = NULL,
+                  lambda.min.ratio = NULL,
+                  rho = NULL,
+                  method = "clime",
+                  sym = "or",
+                  standardize = FALSE,
+                  correlation = FALSE,
+                  biased = TRUE,
+                  verbose = TRUE,
+                  prec = 1e-3)
 {
   if(method!="clime" && method!="slasso") {
     cat("method must be either \"clime\" or \"slasso\"\n")
@@ -28,31 +31,49 @@ tiger <- function(data,
   est$cov.input = isSymmetric(data)
   if(est$cov.input)
   {
-    if(verbose) cat("The input is identified as the covriance matrix.\n")
-    S = cov2cor(data)
-    #S = data*(1-1/n)
+    if(verbose) {
+      cat("The input is identified as the covriance matrix.\n")
+    }
+    if(method=="slasso") {
+      cat("The input for \"slasso\" cannot be covriance matrix.\n")
+      return(NULL)
+    }
+    if(correlation)
+      S = cov2cor(data)
+    else
+      S = data
   }
   if(!est$cov.input)
   {
-    data = scale(data)
-    #S = cor(data)
-    S = cov(data)*(1-1/n)
-    #S = cov(data)+diag(d)/n
+    if(standardize)
+      data = scale(data)
+    
+    if(correlation)
+      S = cor(data)
+    else
+      S = cov(data)
   }
+  if(biased && !correlation)
+    S = S*(1-1/n)
   
   if(!is.null(lambda)) nlambda = length(lambda)
   if(is.null(lambda))
   {
     if(method == "slasso") {
-      if(is.null(nlambda))
+      if(is.null(nlambda) || nlambda==1){
         nlambda = 1
-      lambda = seq(1,0.5,length=nlambda)
+        lambda=pi*sqrt(log(d)/(2*n))
+      }
+      else{
+        lambda0=pi*sqrt(log(d)/(2*n))
+        lambda = seq(lambda0,0.2*lambda0,length=nlambda)
+      }
     }
     else {
       if(is.null(nlambda))
         nlambda = 10
       if(is.null(lambda.min.ratio))
-        lambda.min.ratio = 0.4
+        lambda.min.ratio = 0.2
       lambda.max = max(max(S-diag(d)),-min(S-diag(d)))
       lambda.min = lambda.min.ratio*lambda.max
       lambda = exp(seq(log(lambda.max), log(lambda.min), length = nlambda))
@@ -108,12 +129,13 @@ tiger <- function(data,
     est$path = list()  
     est$df = matrix(0,d,nlambda)
     est$sparsity = rep(0,nlambda)
+    tmp_icov = tiger.slasso(data, lambda=lambda, standardize=standardize)
     for(i in 1:nlambda){
-      tmp_icov = tiger.slasso(data, lambda=lambda[i])
-      est$icov1[[i]] = tmp_icov
-      est$icov[[i]] = tmp_icov*(abs(tmp_icov)<=abs(t(tmp_icov)))+t(tmp_icov)*(abs(t(tmp_icov))<abs(tmp_icov))
-      diag(tmp_icov) = 0
-      est$path[[i]] = abs(tmp_icov)
+      i_icov=tmp_icov[,,i]
+      est$icov1[[i]] = i_icov
+      est$icov[[i]] = i_icov*(abs(i_icov)<=abs(t(i_icov)))+t(i_icov)*(abs(t(i_icov))<abs(i_icov))
+      diag(i_icov) = 0
+      est$path[[i]] = abs(i_icov)
       est$df[,i] = apply(sign(est$path[[i]]),2,sum)
       if(sym == "or")
         est$path[[i]] = sign(est$path[[i]] + t(est$path[[i]]))
@@ -127,7 +149,9 @@ tiger <- function(data,
   est$method = method
   est$sym = sym
   est$verbose = verbose
-  
+  est$standardize = standardize
+  est$correlation = correlation
+  est$biased = biased
   class(est) = "tiger"
   return(est)
 }

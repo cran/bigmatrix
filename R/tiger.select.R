@@ -5,8 +5,8 @@
 #                     2.stability approach to regularization selection (stars)     #
 # Author: Xingguo Li                                                               #
 # Email: <xingguo.leo@gmail.com>                                                   #
-# Date: July 27th 2012                                                             #
-# Version: 0.9                                                                     #
+# Date: Aug 3rd, 2012                                                              #
+# Version: 0.9.2                                                                   #
 #----------------------------------------------------------------------------------#
 
 ## Main Function
@@ -64,9 +64,11 @@ tiger.select <- function(est,
       }
       
       if(est$method == "clime")
-        out = tiger(est$data, lambda = est$opt.lambda, method = "clime", sym = est$sym, verbose = FALSE)
+        out = tiger(est$data, lambda = est$opt.lambda, method = "clime", sym = est$sym, verbose = FALSE,
+                    standardize=est$standardize,correlation=est$correlation,biased=est$biased)
       else 
-        out = tiger(est$data, lambda = est$opt.lambda, method = "slasso", sym = est$sym, verbose = FALSE)
+        out = tiger(est$data, lambda = est$opt.lambda, method = "slasso", sym = est$sym, verbose = FALSE,
+                    standardize=est$standardize,correlation=est$correlation,biased=est$biased)
       
       est$refit = est$path[[est$opt.index]]
       est$opt.sparsity=sum(est$refit)/d/(d-1)
@@ -99,9 +101,11 @@ tiger.select <- function(est,
         ind.sample = sample(c(1:n), floor(n*stars.subsample.ratio), replace=FALSE)
         
         if(est$method == "clime")
-          tmp = tiger(est$data[ind.sample,], lambda = est$lambda, method = "clime", sym = est$sym, verbose = FALSE)$path
+          tmp = tiger(est$data[ind.sample,], lambda = est$lambda, method = "clime", sym = est$sym, verbose = FALSE,
+                      standardize=est$standardize,correlation=est$correlation,biased=est$biased)$path
         else 
-          tmp = tiger(est$data[ind.sample,], lambda = est$lambda, method = "slasso", sym = est$sym, verbose = FALSE)$path
+          tmp = tiger(est$data[ind.sample,], lambda = est$lambda, method = "slasso", sym = est$sym, verbose = FALSE,
+                      standardize=est$standardize,correlation=est$correlation,biased=est$biased)$path
         
         for(i in 1:nlambda)
           est$merge[[i]] = est$merge[[i]] + tmp[[i]]

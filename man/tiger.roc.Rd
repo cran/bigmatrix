@@ -64,7 +64,7 @@ Maintainers: Xingguo Li<xingguo.leo@gmail.com>
 \examples{
 #generate data
 L = tiger.generator(d = 50, graph = "random", prob = 0.1)
-out1 = tiger(L$data)
+out1 = tiger(L$data, lambda=10^(seq(log10(.4), log10(0.03), length.out=20)))
 
 #draw ROC curve
 Z1 = tiger.roc(out1$path,L$theta)

@@ -4,8 +4,8 @@
 #             estimation                                                           #
 # Author: Xingguo Li                                                               #
 # Email: <xingguo.leo@gmail.com>                                                   #
-# Date: July 27th 2012                                                             #
-# Version: 0.9                                                                     #
+# Date: July 29th 2012                                                             #
+# Version: 0.9.2                                                                   #
 #----------------------------------------------------------------------------------#
 
 
@@ -36,8 +36,8 @@ tiger.clime <- function(Sigma, d, maxdf, lambda, nlambda, rho, prec, verbose){
   x = unlist(str[3])
   col_cnz = unlist(str[10])
   row_idx = unlist(str[11])
-  ite = vector("list", nlambda)
+  ite = vector("list", 2)
   ite[[1]] = ite_ext
   ite[[2]] = ite_int
-  return(list(icov=icov_list, icov1=icov_list1,ite=ite_ext, x=x, col_cnz=col_cnz, row_idx=row_idx))
+  return(list(icov=icov_list, icov1=icov_list1,ite=ite, x=x, col_cnz=col_cnz, row_idx=row_idx))
 }

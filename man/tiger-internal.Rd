@@ -4,6 +4,7 @@
 \alias{tiger.cv}
 \alias{part.cv}
 \alias{tiger.clime}
+\alias{tiger.slasso}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{Internal tiger functions}
 \description{
@@ -15,6 +16,7 @@ tiger.tracel2(Sigma, Omega)
 tiger.cv(obj, loss=c("likelihood", "tracel2"), fold=5)
 part.cv(n, fold)
 tiger.clime(Sigma, d, maxdf, lambda, nlambda, rho, prec, verbose)
+tiger.slasso(data, lambda, standardize=FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -31,6 +33,8 @@ tiger.clime(Sigma, d, maxdf, lambda, nlambda, rho, prec, verbose)
   \item{rho}{Value of augmented Lagrangian multipiler.}
   \item{prec}{Stopping criterion.}
   \item{verbose}{Tracing information printing.}
+  \item{data}{\code{n} by \code{d} data matrix. }
+  \item{standardize}{Whether the variables will be standardized to have mean zero and unit standard deviation.}
 }
 
 \details{

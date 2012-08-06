@@ -1,23 +1,22 @@
 useDynLib("bigmatrix")
 import("glmnet","MASS","igraph","Matrix","lattice")
 export("tiger", 
-       "tiger.select",
        "tiger.generator",
-       "tiger.plot",
        "tiger.roc",
+       "tiger.select",
+       "tiger.plot",
        "print.tiger",
-       "print.sim",
-       "plot.sim",
        "print.select",
-       "plot.select",
-       "print.roc",
+       "print.sim",
+       "plot.tiger",
        "plot.roc",
-       "plot.tiger")
+       "plot.select",
+       "plot.sim")
 S3method("print", "tiger")
-S3method("print", "sim")
-S3method("plot", "sim")
-S3method("print", "select")
-S3method("plot", "select")
 S3method("print", "roc")
-S3method("plot", "roc")
+S3method("print", "select")
+S3method("print", "sim")
 S3method("plot", "tiger")
+S3method("plot", "roc")
+S3method("plot", "select")
+S3method("plot", "sim")

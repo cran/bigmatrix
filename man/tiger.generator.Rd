@@ -52,7 +52,7 @@ Given the adjacency matrix \code{theta}, the graph patterns are generated as bel
 (IV)\code{"band"}: The off-diagonal elements are set to be \code{theta[i,j]=1} if \code{1<=|i-j|<=g} and \code{0} other wise. It results in \code{(2d-1-g)*g/2} edges in the graph.\cr\cr
 (V) \code{"scale-free"}: The graph is generated using B-A algorithm. The initial graph has two connected nodes and each new node is connected to only one node in the existing graph with the probability proportional to the degree of the each node in the existing graph. It results in \code{d} edges in the graph.\cr\cr
 (VI) \code{"decay"}: \eqn{\omega^0_{ij} = 0.6^{| i-j |}}. \cr\cr
-(VII) \code{"sparse"}: Let \eqn{\Omega_0 = O + \delta I}, where each off-diagonal entry in \eqn{O} is generated independently and equals to 0.5 with probability \code{prob} or 0 with probability 1-\code{prob}. \eqn{\delta} is chosen such that the conditional number (the ratio of maximal and minimal singular values of a matrix) is equal to d. Finally, the matrix is standardized to have unit diagonals. The default value of \code{prob} = 0.1. \cr\cr
+(VII) \code{"sparse"}: Let \eqn{\Omega_0 = O + \delta I}, where each off-diagonal entry in \eqn{O} is generated independently and equals to 0.5 with probability \code{prob} or 0 with probability 1-\code{prob}. \eqn{\delta} is chosen such that the conditional number (the ratio of maximal and minimal singular values of a matrix) is equal to d. Finally, the matrix is standardized to have unit diagonals. The default value of \code{prob} = 0.02. \cr\cr
 (VIII) \code{"block"}: A block diagonal matrix with block size \code{g} where each block has off-diagonal entries equal to 0.5 and diagonal 1. The resulting matrix is then randomly permuted. Teh default value block size is 5. \cr\cr
 
 The adjacency matrix \code{theta} has all diagonal elements equal to \code{0}. To obtain a positive definite precision matrix, the smallest eigenvalue of \code{theta*v} (denoted by \code{e}) is computed. Then we set the precision matrix equal to \code{theta*v+(|e|+0.1+t)I}. The covariance matrix is then computed to generate multivariate normal data.
@@ -101,7 +101,7 @@ L = tiger.generator(prob = 0.5, vis = TRUE)
 ## hub graph with 6 hubs
 L = tiger.generator(graph = "hub", g = 6, vis = TRUE)
 
-## hub graph with 8 clusters
+## cluster graph with 8 clusters
 L = tiger.generator(graph = "cluster", g = 8, vis = TRUE)
 
 ## scale-free graphs
@@ -114,5 +114,5 @@ L = tiger.generator(graph="decay", vis = TRUE)
 L = tiger.generator(graph="block", g=6, vis = TRUE)
 
 ## sparse graphs
-L = tiger.generator(graph="sparse", prob=0.05, vis = TRUE)
+L = tiger.generator(graph="sparse", prob=0.03, vis = TRUE)
 }

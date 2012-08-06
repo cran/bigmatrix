@@ -4,8 +4,8 @@
 #         The ground truth is required                                              #
 # Author: Xingguo Li                                                                #
 # Email: <xingguo.leo@gmail.com>                                                    #
-# Date: July 27th 2012                                                              #
-# Version: 0.9                                                                      #
+# Date: July 29th 2012                                                              #
+# Version: 0.9.2                                                                    #
 #-----------------------------------------------------------------------------------#
 
 tiger.roc <- function(path, theta, verbose = TRUE){

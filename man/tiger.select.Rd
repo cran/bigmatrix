@@ -95,7 +95,7 @@ L = tiger.generator(d = 50, graph="hub")
 out1 = tiger(L$data)
 
 #model selection using stars
-out1.select2 = tiger.select(out1, criterion = "stars", stars.thresh = 0.05)
+out1.select2 = tiger.select(out1, criterion = "stars", stars.thresh = 0.03)
 plot(out1.select2)
 
 #model selection using cross validation

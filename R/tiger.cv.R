@@ -3,8 +3,8 @@
 # tiger.cv(): Cross validation for regularization parameter                        #
 # Author: Xingguo Li                                                               #
 # Email: <xingguo.leo@gmail.com>                                                   #
-# Date: July 27th 2012                                                             #
-# Version: 0.9                                                                     #
+# Date: Aug 3rd, 2012                                                              #
+# Version: 0.9.2                                                                   #
 #----------------------------------------------------------------------------------#
 
 tiger.cv <- function(obj, loss=c("likelihood", "tracel2"), fold=5) {
@@ -21,13 +21,18 @@ tiger.cv <- function(obj, loss=c("likelihood", "tracel2"), fold=5) {
   lossfun = match.fun(lossname)
   
   loss_re = matrix(0, nrow = fold, ncol = obj$nlambda)
+  if(obj$biased)
+    scalar = 1-1/nrow(x[part_list$testMat[,1],])
+  else
+    scalar = 1
   for (i in 1:fold) {
     x_train = x[part_list$trainMat[,i],]
-    tiger_cv = tiger(x_train, lambda=obj$lambda, method = obj$method,sym=obj$sym,verbose=obj$verbose)
+    tiger_cv = tiger(x_train, lambda=obj$lambda, method = obj$method,sym=obj$sym,verbose=obj$verbose,
+                     standardize=obj$standardize,correlation=obj$correlation,biased=obj$biased)
     x_test = x[part_list$testMat[,i],]
-    ntest = nrow(x_test) 
+    ntest = nrow(x_test)
     for (j in 1:obj$nlambda) {
-      loss_re[i,j] = loss_re[i,j]  + lossfun((cov(x_test)),  tiger_cv$icov[[j]])
+      loss_re[i,j] = loss_re[i,j]  + lossfun(cov(x_test)*scalar,  tiger_cv$icov[[j]])
     }
   }
   

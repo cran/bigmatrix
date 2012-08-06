@@ -3,8 +3,8 @@
 # tiger.plot(): graph visualization                                                 #
 # Author: Xingguo Li                                                                #
 # Email: <xingguo.leo@gmail.com>                                                    #
-# Date: July 27th 2012                                                              #
-# Version: 0.9                                                                      #
+# Date: July 29th 2012                                                              #
+# Version: 0.9.2                                                                    #
 #-----------------------------------------------------------------------------------#
 
 tiger.plot <- function(G, epsflag = FALSE, graph.name = "default", cur.num = 1, location=NULL){

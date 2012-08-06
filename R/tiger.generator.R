@@ -3,8 +3,8 @@
 # tiger.generator(): Data generator                                                 #
 # Author: Xingguo Li                                                                #
 # Email: <xingguo.leo@gmail.com>                                                    #
-# Date: July 27th 2012                                                              #
-# Version: 0.9                                                                      #
+# Date: July 29th 2012                                                              #
+# Version: 0.9.2                                                                    #
 #-----------------------------------------------------------------------------------#
 
 ## Main function
@@ -115,6 +115,7 @@ tiger.generator <- function(n = 200, d = 50, graph = "random", v = NULL, u = NUL
         omega[i,j] = .6^abs(i-j)
       }
     }
+    omega[omega<1e-4] = 0
   }
   
   # dense omega
@@ -125,7 +126,7 @@ tiger.generator <- function(n = 200, d = 50, graph = "random", v = NULL, u = NUL
   
   # random sparse omega
   if (graph == "sparse") {
-    if(is.null(prob)) prob = 0.1
+    if(is.null(prob)) prob = 0.02
     while(TRUE){
       ndlt = 300
       rand_num = runif(d^2)

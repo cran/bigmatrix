@@ -51,18 +51,23 @@ void tiger_clime(double * Sigma, double * omg, double * x, int *dd, int * ite_cn
     for(i=0; i<dim; i++){
         for(j=0; j<dim; j++) {
             e_i[j] = 0;
+            omg0[j] = 0;
+            idx_i[j] = 1;
+            alp[j] = 0;
+            mu[j] = 0;
         }
         // idx_i[i] = 0;
         e_i[i] = 1;
+        size_a = 0;
             
         for(m=0; m<nlambda; m++) {
             for(j=0; j<dim; j++) {
-                omg0[j] = 0;
-                alp[j] = 0;
-                mu[j] = 0;
-                idx_i[j] = 1;
+                //alp[j] = 0;
+                //mu[j] = 0;
+                //omg0[j] = 0;
+                //idx_i[j] = 1;
             }
-            size_a = 0;
+            //size_a = 0;
             ilambda = lambda[m];
             gap_ext = 1;
             ite_ext = 0;

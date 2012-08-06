@@ -5,14 +5,14 @@
 Tuning Insensitive Graph Estimation and Regression
 }
 \description{
-Solve for the precision matrix estimations with two different methods. The first is the tuning insensitive graph estimation and regression implemented with scaled Lasso. Another method is by estimating at a grid of values for the constrained lambda and the augmented Lagrangian multiplier rho based on constrained L1 minimization for sparse precision matrix estimation, which guarantees positive definite output by projected augmented Lagrangian method and further accelerates the algorithm via coordinate descent and active set methods.
+Solve for the precision matrix estimations with two different methods. The first is the tuning insensitive graph estimation and regression implemented with scaled Lasso. Another method is by estimating at a grid of values for the constrained lambda and the augmented Lagrangian multiplier rho based on constrained \eqn{\ell_1} minimization for sparse precision matrix estimation, which guarantees positive definite output by projected augmented Lagrangian method and further accelerates the algorithm via coordinate descent and active set methods.
 }
 \details{
 \tabular{ll}{
-Package: \tab tiger\cr
+Package: \tab bigmatrix\cr
 Type: \tab Package\cr
-Version: \tab 0.9.1\cr
-Date: \tab 2012-07-28\cr
+Version: \tab 0.9.2\cr
+Date: \tab 2012-08-03\cr
 License: \tab GPL-2\cr
 }
 }
@@ -23,7 +23,7 @@ Maintainers: Xingguo Li<xingguo.leo@gmail.com>
 }
 \references{
 1. Jerome Friedman, Trevor Hastie and Rob Tibshirani. \emph{Regularization Paths for Generalized Linear Models via Coordinate Descent.} Journal of Statistical Software, 2010. \cr
-2. Tony Cai, Weidong Liu and Xi Luo. \emph{A constrained L1 minimization approach to sparse precision matrix estimation.} Journal of the American Statistical Association, 2011. 
+2. Tony Cai, Weidong Liu and Xi Luo. \emph{A constrained \eqn{\ell_1} minimization approach to sparse precision matrix estimation.} Journal of the American Statistical Association, 2011. 
 }
 
 \keyword{ package }
