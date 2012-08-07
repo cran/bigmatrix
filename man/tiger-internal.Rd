@@ -15,8 +15,8 @@ tiger.likelihood(Sigma, Omega)
 tiger.tracel2(Sigma, Omega)
 tiger.cv(obj, loss=c("likelihood", "tracel2"), fold=5)
 part.cv(n, fold)
-tiger.clime(Sigma, d, maxdf, lambda, nlambda, rho, prec, verbose)
-tiger.slasso(data, lambda, standardize=FALSE)
+tiger.clime(Sigma, d, maxdf, lambda, rho, prec, verbose)
+tiger.slasso(data, lambda)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -29,12 +29,10 @@ tiger.slasso(data, lambda, standardize=FALSE)
   \item{d}{Dimension of data.}
   \item{maxdf}{Maximal degree of freedom.}
   \item{lambda}{Grid of non-negative values for the constraint parameter lambda.}
-  \item{nlambda}{Number of \code{lambda}.}
   \item{rho}{Value of augmented Lagrangian multipiler.}
   \item{prec}{Stopping criterion.}
   \item{verbose}{Tracing information printing.}
   \item{data}{\code{n} by \code{d} data matrix. }
-  \item{standardize}{Whether the variables will be standardized to have mean zero and unit standard deviation.}
 }
 
 \details{
@@ -46,7 +44,7 @@ tiger.slasso(data, lambda, standardize=FALSE)
 
 \author{
 Xingguo Li, Tuo Zhao, Lie Wang and Han Liu \cr
-Maintainers: Xingguo Li<xingguo.leo@gmail.com>
+Maintainers: Xingguo Li <xingguo.leo@gmail.com>
 }
 %\note{
 %}

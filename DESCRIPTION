@@ -1,8 +1,8 @@
 Package: bigmatrix
 Type: Package
 Title: Tuning Insensitive Graph Estimation and Regression
-Version: 0.9.2
-Date: 2012-08-06
+Version: 0.9.3
+Date: 2012-08-07
 Author: Xingguo Li, Tuo Zhao, Lie Wang and Han Liu
 Maintainer: Xingguo LI <xingguo.leo@gmail.com>
 Depends: R (>= 2.14), glmnet, lattice, igraph, MASS, Matrix
@@ -18,5 +18,5 @@ Description: The package "bigmatrix" solves for the precision matrix
         methods.
 License: GPL-2
 Repository: CRAN
-Packaged: 2012-08-06 18:25:13 UTC; admin-118
-Date/Publication: 2012-08-06 18:42:01
+Packaged: 2012-08-08 03:45:52 UTC; leo
+Date/Publication: 2012-08-13 07:48:18

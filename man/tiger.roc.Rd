@@ -51,7 +51,7 @@ Area under the ROC curve
 
 \author{
 Xingguo Li, Tuo Zhao, Lie Wang and Han Liu \cr
-Maintainers: Xingguo Li<xingguo.leo@gmail.com>
+Maintainers: Xingguo Li <xingguo.leo@gmail.com>
 }
 
 %\references{

@@ -79,7 +79,7 @@ The model selection is NOT available when the data input is the sample covarainc
 
 \author{
 Xingguo Li, Tuo Zhao, Lie Wang and Han Liu \cr
-Maintainers: Xingguo Li<xingguo.leo@gmail.com>
+Maintainers: Xingguo Li <xingguo.leo@gmail.com>
 }
 
 %\references{

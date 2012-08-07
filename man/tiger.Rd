@@ -12,7 +12,8 @@ Solve for the precision matrix estimations with two different methods. The first
 \usage{
 tiger(data, lambda = NULL, nlambda = NULL, lambda.min.ratio = NULL, 
      rho = NULL, method = "clime", sym = "or", standardize = FALSE, 
-     correlation = FALSE, biased = TRUE, verbose = TRUE, prec = 1e-3)
+     correlation = FALSE, biased = TRUE, perturb = TRUE, 
+     verbose = TRUE, prec = 1e-3)
 }
 
 \arguments{
@@ -20,12 +21,13 @@ tiger(data, lambda = NULL, nlambda = NULL, lambda.min.ratio = NULL,
   \item{lambda}{Grid of non-negative values for the constraint parameter \code{lambda}. If missing, \code{nlambda}  values from \code{lambda.min} to \code{lambda.max} will be generated. Default value is \eqn{ (log(p)/(2n))^{1/2}} for \code{"slasso"}.}
   \item{nlambda}{Number of the constraint parameter \code{lambda}. Default value is 10 for \code{"clime"} and 1 for \code{"slasso"}.}
   \item{lambda.min.ratio}{The smallest value for \code{lambda} for \code{clime}, as a fraction of the uppperbound (\code{MAX}) of the regularization parameter. The program can automatically generate \code{lambda} as a sequence of length = \code{nlambda} starting from \code{MAX} to \code{lambda.min.ratio*MAX} in log scale. The default value is \code{0.2}.}
-  \item{rho}{Augmented Lagrangian multiplier for \code{clime}. Default value is the square root of the dimension of data. }
+  \item{rho}{Augmented Lagrangian multiplier for \code{clime}. The default value is the square root of the dimension of data. }
   \item{method}{Precision matrix estimation with two options: \code{"clime"} and \code{"slasso"}. Default value is \code{"clime"}.}
   \item{sym}{Symmetrize the output graphs. If \code{sym = "and"}, the edge between node \code{i} and node \code{j} is selected ONLY when both node \code{i} and node \code{j} are selected as neighbors for each other. If \code{sym = "or"}, the edge is selected when either node \code{i} or node \code{j} is selected as the neighbor for each other. The default value is \code{"or"}.}
   \item{standardize}{Whether the variables will be standardized to have mean zero and unit standard deviation. The default value is \code{FALSE}.}
   \item{correlation}{Whether to use the correlation matrix rather than the covariance matrix as the \code{Sigma} for \code{clime}.}
   \item{biased}{Whether the sample covariance matrix is biased estimator of covariance matrix or not for \code{clime}. It is only applicable when \code{correlation=FALSE}. The default value is \code{TRUE}.}
+  \item{perturb}{Whether a perturbed \code{Sigma} should be used or the positive perturbation added if it is numerical for \code{clime}. The default value is TRUE.}
   \item{verbose}{If \code{verbose = FALSE}, tracing information printing is disabled. The default value is \code{TRUE}.}
   \item{prec}{Stopping criterion. The default value is 1e-3.}
   }
@@ -74,6 +76,7 @@ An object with S3 class \code{"tiger"} is returned:
   \item{standardize}{Flag of whether the variables are standardized to have mean zero and unit standard deviation.}
   \item{correlation}{Flag of whether the correlation matrix rather than the covariance matrix is used as the \code{Sigma}.}
   \item{biased}{Flag of whether the sample covariance matrix is biased estimator of covariance matrix or not. }
+  \item{perturb}{Flag of whether a perturbed \code{Sigma} should be used or the positive perturbation added if it is numerical for \code{clime}.}
   \item{verbose}{
   Flag of whether tracing information is printed.
   }
@@ -81,7 +84,7 @@ An object with S3 class \code{"tiger"} is returned:
 
 \author{
 Xingguo Li, Tuo Zhao, Lie Wang and Han Liu \cr
-Maintainers: Xingguo Li<xingguo.leo@gmail.com>
+Maintainers: Xingguo Li <xingguo.leo@gmail.com>
 }
 
 \references{

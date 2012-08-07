@@ -9,7 +9,7 @@
 #----------------------------------------------------------------------------------#
 
 
-tiger.slasso <- function(data, lambda, standardize=FALSE){
+tiger.slasso <- function(data, lambda){
   nlambda = length(lambda)
   X=data
   d=ncol(X)

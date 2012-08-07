@@ -33,7 +33,7 @@ void tiger_clime(double * Sigma, double * omg, double * x, int *dd, int * ite_cn
     double *SS = (double*) malloc(dim*dim*sizeof(double));
     double *Sy = (double*) malloc(dim*sizeof(double));
 
-    max_ite1 = 1e3;
+    max_ite1 = 2e3;
     max_ite2 = 1e4;
     eps1 = * prec;
     eps2 = 1e-3;
@@ -191,6 +191,7 @@ void tiger_clime(double * Sigma, double * omg, double * x, int *dd, int * ite_cn
                     }
                 }
                 omg_out1 = omg_dif_sum1/omg_sum1;
+                //if(ite_ext>000 && (ite_ext%20)==0) printf("col=%d, lambda=%f, ite_ext=%d, omg_out1=%f,omg_dif_sum1=%f,omg_sum1=%f \n",i,ilambda,ite_ext,omg_out1,omg_dif_sum1,omg_sum1);
 
                 // update mu
                 mu_dif = 0;

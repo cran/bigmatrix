@@ -34,7 +34,7 @@ A positive number being added to the diagonal elements of the precision matrix, 
 For \code{"cluster"} or \code{"hub"} graph, \code{g} is the number of hubs or clusters in the graph. The default value is about \code{d/20} if \code{d >= 40} and \code{2} if \code{d < 40}. For \code{"band"} graph, \code{g} is the bandwidth and the default value is \code{1}. For \code{"block"} graph, \code{g} is the size of the block. NOT applicable to \code{"random"} graph.
 }
   \item{prob}{
-For \code{"random"} graph, it is the probability that a pair of nodes has an edge. The default value is \code{3/d}. For \code{"cluster"} graph, it is the probability that a pair of nodes has an edge in each cluster. The default value is \code{6*g/d} if \code{d/g <= 30} and \code{0.3} if \code{d/g > 30}. NOT applicable to \code{"hub"} or \code{"band"} graphs.
+For \code{"random"} graph, it is the probability that a pair of nodes has an edge. The default value is \code{3/d}. For \code{"cluster"} graph, it is the probability that a pair of nodes has an edge in each cluster. The default value is \code{6*g/d} if \code{d/g <= 30} and \code{0.3} if \code{d/g > 30}.For \code{decay}, it is the base number for \eqn{\omega^0_{ij} = B^{| i-j |}} where \eqn{0<B<1}. NOT applicable to \code{"hub"}, \code{"band"}, \code{block} or \code{scale-free} graphs.
 }
   \item{vis}{
 Visualize the adjacency matrix of the true graph structure, the graph pattern, the covariance matrix and the empirical covariance matrix. The default value is \code{FALSE}
@@ -51,7 +51,7 @@ Given the adjacency matrix \code{theta}, the graph patterns are generated as bel
 (III)\code{"cluster"}:The row/columns are evenly partitioned into \code{g} disjoint groups. Each pair of off-diagonal elements are set \code{theta[i,j]=theta[j,i]=1} for \code{i!=j} with the probability \code{prob}if both \code{i} and \code{j} belong to the same group, and \code{0} other wise. It results in about \code{g*(d/g)*(d/g-1)*prob/2} edges in the graph.\cr\cr
 (IV)\code{"band"}: The off-diagonal elements are set to be \code{theta[i,j]=1} if \code{1<=|i-j|<=g} and \code{0} other wise. It results in \code{(2d-1-g)*g/2} edges in the graph.\cr\cr
 (V) \code{"scale-free"}: The graph is generated using B-A algorithm. The initial graph has two connected nodes and each new node is connected to only one node in the existing graph with the probability proportional to the degree of the each node in the existing graph. It results in \code{d} edges in the graph.\cr\cr
-(VI) \code{"decay"}: \eqn{\omega^0_{ij} = 0.6^{| i-j |}}. \cr\cr
+(VI) \code{"decay"}: \eqn{\omega^0_{ij} = B^{| i-j |}}. The default value of \eqn{B = 0.6}. \cr\cr
 (VII) \code{"sparse"}: Let \eqn{\Omega_0 = O + \delta I}, where each off-diagonal entry in \eqn{O} is generated independently and equals to 0.5 with probability \code{prob} or 0 with probability 1-\code{prob}. \eqn{\delta} is chosen such that the conditional number (the ratio of maximal and minimal singular values of a matrix) is equal to d. Finally, the matrix is standardized to have unit diagonals. The default value of \code{prob} = 0.02. \cr\cr
 (VIII) \code{"block"}: A block diagonal matrix with block size \code{g} where each block has off-diagonal entries equal to 0.5 and diagonal 1. The resulting matrix is then randomly permuted. Teh default value block size is 5. \cr\cr
 
@@ -79,7 +79,7 @@ The adjacency matrix of true graph structure (in sparse matrix representation) f
 
 \author{
 Xingguo Li, Tuo Zhao, Lie Wang and Han Liu \cr
-Maintainers: Xingguo Li<xingguo.leo@gmail.com>
+Maintainers: Xingguo Li <xingguo.leo@gmail.com>
 }
 
 %\references{

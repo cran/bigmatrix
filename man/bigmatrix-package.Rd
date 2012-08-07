@@ -19,7 +19,7 @@ License: \tab GPL-2\cr
 
 \author{
 Xingguo Li, Tuo Zhao, Lie Wang and Han Liu \cr
-Maintainers: Xingguo Li<xingguo.leo@gmail.com>
+Maintainers: Xingguo Li <xingguo.leo@gmail.com>
 }
 \references{
 1. Jerome Friedman, Trevor Hastie and Rob Tibshirani. \emph{Regularization Paths for Generalized Linear Models via Coordinate Descent.} Journal of Statistical Software, 2010. \cr

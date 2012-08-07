@@ -9,10 +9,11 @@
 #----------------------------------------------------------------------------------#
 
 
-tiger.clime <- function(Sigma, d, maxdf, lambda, nlambda, rho, prec, verbose){
+tiger.clime <- function(Sigma, d, maxdf, lambda, rho, prec, verbose){
   
   gamma = 1/rho
   d_sq = d^2
+  nlambda = length(lambda)
   icov = array(0,dim=c(d,d,nlambda))
   ite_ext = rep(0,d*nlambda)
   ite_int = rep(0,d*nlambda)

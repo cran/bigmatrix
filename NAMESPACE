@@ -2,6 +2,7 @@ useDynLib("bigmatrix")
 import("glmnet","MASS","igraph","Matrix","lattice")
 export("tiger", 
        "tiger.generator",
+       "tiger.clime",
        "tiger.roc",
        "tiger.select",
        "tiger.plot",

@@ -38,7 +38,7 @@ The user can change \code{cur.num} to plot several figures and select the best o
 
 \author{
 Xingguo Li, Tuo Zhao, Lie Wang and Han Liu \cr
-Maintainers: Xingguo Li<xingguo.leo@gmail.com>
+Maintainers: Xingguo Li <xingguo.leo@gmail.com>
 }
 
 %\references{

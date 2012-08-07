@@ -109,13 +109,21 @@ tiger.generator <- function(n = 200, d = 50, graph = "random", v = NULL, u = NUL
   }
   # decay omega
   if (graph == "decay") {
+    if(is.null(prob)) {
+      prob = 0.6
+    } else {
+      if(prob<=0 || prob>=1) {
+        cat("For \"decay\" model, the prob need to be between 0 and 1 as a base number\n")
+        break
+      }
+    }
     omega = matrix(0,nrow=d,ncol=d)
     for (i in 1:d){
       for (j in 1:d){
-        omega[i,j] = .6^abs(i-j)
+        omega[i,j] = prob^abs(i-j)
       }
     }
-    omega[omega<1e-4] = 0
+    #omega[omega<1e-4] = 0
   }
   
   # dense omega
@@ -177,7 +185,7 @@ tiger.generator <- function(n = 200, d = 50, graph = "random", v = NULL, u = NUL
   }
   
   if(graph=="decay"||graph=="dense"||graph=="sparse"||graph=="block"){
-    theta[which(omega>0.009)] = 1
+    theta[which(omega>1e-3)] = 1
     theta[row(theta)==col(theta)] = 0
     sigma = solve(omega)
   }

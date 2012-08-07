@@ -3,8 +3,8 @@
 # tiger(): The user interface for tiger()                                          #
 # Author: Xingguo Li                                                               #
 # Email: <xingguo.leo@gmail.com>                                                   #
-# Date: Aug 3rd, 2012                                                              #
-# Version: 0.9.2                                                                   #
+# Date: Aug 7th, 2012                                                              #
+# Version: 0.9.3                                                                   #
 #----------------------------------------------------------------------------------#
 
 tiger <- function(data,
@@ -17,6 +17,7 @@ tiger <- function(data,
                   standardize = FALSE,
                   correlation = FALSE,
                   biased = TRUE,
+                  perturb = TRUE,
                   verbose = TRUE,
                   prec = 1e-3)
 {
@@ -88,8 +89,17 @@ tiger <- function(data,
   if(method == "clime"){
     if(is.null(rho))
       rho = sqrt(d)
+    if (is.logical(perturb)) {
+      if (perturb) { 
+        eigvals = eigen(S, only.values=T)$values
+        perturb = max(max(max(eigvals) - d*min(eigvals), 0)/(d-1), 1/n)
+      } else {
+        perturb = 0
+      }
+    }
+    S = S + diag(d)*perturb
     maxdf = min(n,d)
-    re_tiger = tiger.clime(S, d, maxdf, lambda, nlambda, rho, prec, verbose)
+    re_tiger = tiger.clime(S, d, maxdf, lambda, rho, prec, verbose)
     est$ite = re_tiger$ite
     
     for(j in 1:d) {
@@ -129,7 +139,7 @@ tiger <- function(data,
     est$path = list()  
     est$df = matrix(0,d,nlambda)
     est$sparsity = rep(0,nlambda)
-    tmp_icov = tiger.slasso(data, lambda=lambda, standardize=standardize)
+    tmp_icov = tiger.slasso(data, lambda=lambda)
     for(i in 1:nlambda){
       i_icov=tmp_icov[,,i]
       est$icov1[[i]] = i_icov
@@ -152,6 +162,7 @@ tiger <- function(data,
   est$standardize = standardize
   est$correlation = correlation
   est$biased = biased
+  est$perturb = perturb
   class(est) = "tiger"
   return(est)
 }
