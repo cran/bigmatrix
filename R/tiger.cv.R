@@ -21,14 +21,11 @@ tiger.cv <- function(obj, loss=c("likelihood", "tracel2"), fold=5) {
   lossfun = match.fun(lossname)
   
   loss_re = matrix(0, nrow = fold, ncol = obj$nlambda)
-  if(obj$biased)
-    scalar = 1-1/nrow(x[part_list$testMat[,1],])
-  else
-    scalar = 1
+  scalar = 1-1/nrow(x[part_list$testMat[,1],])
   for (i in 1:fold) {
     x_train = x[part_list$trainMat[,i],]
-    tiger_cv = tiger(x_train, lambda=obj$lambda, method = obj$method,sym=obj$sym,verbose=obj$verbose,
-                     standardize=obj$standardize,correlation=obj$correlation,biased=obj$biased)
+    tiger_cv = tiger(x_train, lambda=obj$lambda, method=obj$method,sym=obj$sym,verbose=obj$verbose,
+                     standardize=obj$standardize,correlation=obj$correlation)
     x_test = x[part_list$testMat[,i],]
     ntest = nrow(x_test)
     for (j in 1:obj$nlambda) {

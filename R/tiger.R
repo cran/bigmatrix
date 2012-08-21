@@ -3,8 +3,8 @@
 # tiger(): The user interface for tiger()                                          #
 # Author: Xingguo Li                                                               #
 # Email: <xingguo.leo@gmail.com>                                                   #
-# Date: Aug 7th, 2012                                                              #
-# Version: 0.9.3                                                                   #
+# Date: Aug 17th, 2012                                                             #
+# Version: 0.9.4                                                                   #
 #----------------------------------------------------------------------------------#
 
 tiger <- function(data,
@@ -13,17 +13,25 @@ tiger <- function(data,
                   lambda.min.ratio = NULL,
                   rho = NULL,
                   method = "clime",
+                  alg = "cdadm",
                   sym = "or",
+                  prec = 1e-3,
+                  max.ite = NULL,
                   standardize = FALSE,
                   correlation = FALSE,
-                  biased = TRUE,
                   perturb = TRUE,
-                  verbose = TRUE,
-                  prec = 1e-3)
+                  verbose = TRUE)
 {
   if(method!="clime" && method!="slasso") {
     cat("method must be either \"clime\" or \"slasso\"\n")
     return(NULL)
+  }
+  
+  if(method=="clime") {
+    if(alg!="cdadm" && alg!="ladm"){
+      cat("alg must be either \"cdadm\" or \"ladm\" when method is \"clime\".\n")
+      return(NULL)
+    }
   }
   
   n = nrow(data)
@@ -54,7 +62,7 @@ tiger <- function(data,
     else
       S = cov(data)
   }
-  if(biased && !correlation)
+  if(!correlation)
     S = S*(1-1/n)
   
   if(!is.null(lambda)) nlambda = length(lambda)
@@ -74,8 +82,8 @@ tiger <- function(data,
       if(is.null(nlambda))
         nlambda = 10
       if(is.null(lambda.min.ratio))
-        lambda.min.ratio = 0.2
-      lambda.max = max(max(S-diag(d)),-min(S-diag(d)))
+        lambda.min.ratio = 0.4
+      lambda.max = min(max(S-diag(diag(S))),-min(S-diag(diag(S))))
       lambda.min = lambda.min.ratio*lambda.max
       lambda = exp(seq(log(lambda.max), log(lambda.min), length = nlambda))
       rm(lambda.max,lambda.min,lambda.min.ratio)
@@ -87,6 +95,8 @@ tiger <- function(data,
   est$nlambda = nlambda
   
   if(method == "clime"){
+    if(is.null(max.ite))
+      max.ite=1e3
     if(is.null(rho))
       rho = sqrt(d)
     if (is.logical(perturb)) {
@@ -99,7 +109,10 @@ tiger <- function(data,
     }
     S = S + diag(d)*perturb
     maxdf = min(n,d)
-    re_tiger = tiger.clime(S, d, maxdf, lambda, rho, prec, verbose)
+    if(alg=="cdadm")
+      re_tiger = tiger.clime.cdadm(S, d, maxdf, lambda, rho, prec, max.ite, verbose)
+    else
+      re_tiger = tiger.clime.ladm(S, d, maxdf, lambda, rho, prec, max.ite, verbose)
     est$ite = re_tiger$ite
     
     for(j in 1:d) {
@@ -136,10 +149,14 @@ tiger <- function(data,
   }
   
   if (method == "slasso") {
+    if(is.null(max.ite))
+      max.ite=1e2
     est$path = list()  
     est$df = matrix(0,d,nlambda)
     est$sparsity = rep(0,nlambda)
-    tmp_icov = tiger.slasso(data, lambda=lambda)
+    out = tiger.slasso(data, lambda=lambda, max.ite=max.ite)
+    tmp_icov = out$icov
+    est$ite = out$ite
     for(i in 1:nlambda){
       i_icov=tmp_icov[,,i]
       est$icov1[[i]] = i_icov
@@ -161,7 +178,6 @@ tiger <- function(data,
   est$verbose = verbose
   est$standardize = standardize
   est$correlation = correlation
-  est$biased = biased
   est$perturb = perturb
   class(est) = "tiger"
   return(est)

@@ -29,7 +29,7 @@ This call simply outlines the options used for computing a tiger object.
 
 \author{
 Xingguo Li, Tuo Zhao, Lie Wang and Han Liu \cr
-Maintainers: Xingguo Li <xingguo.leo@gmail.com>
+Maintainer: Xingguo Li <xingguo.leo@gmail.com>
 }
 %\note{
 %}

@@ -10,8 +10,9 @@ Implements the data generation from multivariate normal distributions with diffe
 }
 
 \usage{
-tiger.generator(n = 200, d = 50, graph = "random", v = NULL, u = NULL, 
-g = NULL, prob = NULL, vis = FALSE, verbose = TRUE)
+tiger.generator(n = 200, d = 50, graph = "random", v = NULL, 
+u = NULL, g = NULL, prob = NULL, seed = NULL, vis = FALSE, 
+scale = FALSE, verbose = TRUE)
 }
 
 \arguments{
@@ -31,13 +32,19 @@ The off-diagonal elements of the precision matrix, controlling the magnitude of 
 A positive number being added to the diagonal elements of the precision matrix, to control the magnitude of partial correlations. The default value is \code{0.1}.
 }
   \item{g}{
-For \code{"cluster"} or \code{"hub"} graph, \code{g} is the number of hubs or clusters in the graph. The default value is about \code{d/20} if \code{d >= 40} and \code{2} if \code{d < 40}. For \code{"band"} graph, \code{g} is the bandwidth and the default value is \code{1}. For \code{"block"} graph, \code{g} is the size of the block. NOT applicable to \code{"random"} graph.
+For \code{"cluster"} or \code{"hub"} graph, \code{g} is the number of hubs or clusters in the graph. The default value is about \code{d/20} if \code{d >= 40} and \code{2} if \code{d < 40}. For \code{"band"} graph, \code{g} is the bandwidth and the default value is \code{1}. For \code{"block"} graph, \code{g} is the number of blocks. NOT applicable to \code{"random"} graph.
 }
   \item{prob}{
 For \code{"random"} graph, it is the probability that a pair of nodes has an edge. The default value is \code{3/d}. For \code{"cluster"} graph, it is the probability that a pair of nodes has an edge in each cluster. The default value is \code{6*g/d} if \code{d/g <= 30} and \code{0.3} if \code{d/g > 30}.For \code{decay}, it is the base number for \eqn{\omega^0_{ij} = B^{| i-j |}} where \eqn{0<B<1}. NOT applicable to \code{"hub"}, \code{"band"}, \code{block} or \code{scale-free} graphs.
 }
+  \item{seed}{
+Set seed for data generation. The default value is 1.
+}
   \item{vis}{
-Visualize the adjacency matrix of the true graph structure, the graph pattern, the covariance matrix and the empirical covariance matrix. The default value is \code{FALSE}
+Visualize the adjacency matrix of the true graph structure, the graph pattern, the covariance matrix and the empirical covariance matrix. The default value is \code{FALSE}.
+}
+  \item{scale}{
+Unequally scale the diagonal of the precesion matrix \eqn{\Theta = D^{1/2} \Omega D^{1/2}}, where \eqn{D} is a diagonal matrix. If \code{scale=TRUE}, then \eqn{d_{ii}=(4i+d-5)/(5*(d-1))}. Or \eqn{D =} \code{scale} if \code{scale} is a diagonal matrix with all positive entries. The default value is \code{FALSE}.
 }
   \item{verbose}{
 If \code{verbose = FALSE}, tracing information printing is disabled. The default value is \code{TRUE}.
@@ -79,7 +86,7 @@ The adjacency matrix of true graph structure (in sparse matrix representation) f
 
 \author{
 Xingguo Li, Tuo Zhao, Lie Wang and Han Liu \cr
-Maintainers: Xingguo Li <xingguo.leo@gmail.com>
+Maintainer: Xingguo Li <xingguo.leo@gmail.com>
 }
 
 %\references{

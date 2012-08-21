@@ -65,12 +65,13 @@ tiger.select <- function(est,
       
       if(est$method == "clime")
         out = tiger(est$data, lambda = est$opt.lambda, method = "clime", sym = est$sym, verbose = FALSE,
-                    standardize=est$standardize,correlation=est$correlation,biased=est$biased)
+                    standardize=est$standardize,correlation=est$correlation)
       else 
         out = tiger(est$data, lambda = est$opt.lambda, method = "slasso", sym = est$sym, verbose = FALSE,
-                    standardize=est$standardize,correlation=est$correlation,biased=est$biased)
+                    standardize=est$standardize,correlation=est$correlation)
       
       est$refit = est$path[[est$opt.index]]
+      #est$refit[abs(est$icov[[est$opt.index]])<5e-2]=0
       est$opt.sparsity=sum(est$refit)/d/(d-1)
       est$opt.icov = est$icov[[est$opt.index]]
       
@@ -102,10 +103,10 @@ tiger.select <- function(est,
         
         if(est$method == "clime")
           tmp = tiger(est$data[ind.sample,], lambda = est$lambda, method = "clime", sym = est$sym, verbose = FALSE,
-                      standardize=est$standardize,correlation=est$correlation,biased=est$biased)$path
+                      standardize=est$standardize,correlation=est$correlation)$path
         else 
           tmp = tiger(est$data[ind.sample,], lambda = est$lambda, method = "slasso", sym = est$sym, verbose = FALSE,
-                      standardize=est$standardize,correlation=est$correlation,biased=est$biased)$path
+                      standardize=est$standardize,correlation=est$correlation)$path
         
         for(i in 1:nlambda)
           est$merge[[i]] = est$merge[[i]] + tmp[[i]]

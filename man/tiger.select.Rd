@@ -42,7 +42,13 @@ If \code{verbose = FALSE}, tracing information printing is disabled. The default
 }
 
 \details{
-Stability approach to regularization selection (stars) is a natural way to select optimal regularization parameter for all three estimation methods. It selects the optimal graph by variability of subsamplings and tends to over-select edges in Gaussian graphical models. Besides selecting the regularization parameters, stars can also provide an additional estimated graph by merging the corresponding subsampled graphs using the frequency counts. K-fold cross validation is also provided for selecting the parameter \code{lambda}. Two losses are implemented currently for K-fold cross validation: \code{likelihood} and \code{tracel2}. 
+Stability approach to regularization selection (stars) is a natural way to select optimal regularization parameter for all three estimation methods. It selects the optimal graph by variability of subsamplings and tends to over-select edges in Gaussian graphical models. Besides selecting the regularization parameters, stars can also provide an additional estimated graph by merging the corresponding subsampled graphs using the frequency counts. K-fold cross validation is also provided for selecting the parameter \code{lambda}. Two losses are implemented currently for K-fold cross validation, which are
+\deqn{
+\textrm{likelihood: } Tr[\Sigma \Omega] - \log|\Omega|
+}
+\deqn{
+\textrm{tracel2: } Tr[diag(\Sigma \Omega - I)^2].
+}
 }
 
 \value{
@@ -79,7 +85,7 @@ The model selection is NOT available when the data input is the sample covarainc
 
 \author{
 Xingguo Li, Tuo Zhao, Lie Wang and Han Liu \cr
-Maintainers: Xingguo Li <xingguo.leo@gmail.com>
+Maintainer: Xingguo Li <xingguo.leo@gmail.com>
 }
 
 %\references{
@@ -91,11 +97,11 @@ Maintainers: Xingguo Li <xingguo.leo@gmail.com>
 
 \examples{
 #generate data
-L = tiger.generator(d = 50, graph="hub")
+L = tiger.generator(d = 50, graph="cluster")
 out1 = tiger(L$data)
 
 #model selection using stars
-out1.select2 = tiger.select(out1, criterion = "stars", stars.thresh = 0.03)
+out1.select2 = tiger.select(out1, criterion = "stars", stars.thresh = 0.1)
 plot(out1.select2)
 
 #model selection using cross validation

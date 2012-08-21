@@ -3,14 +3,18 @@
 # tiger.generator(): Data generator                                                 #
 # Author: Xingguo Li                                                                #
 # Email: <xingguo.leo@gmail.com>                                                    #
-# Date: July 29th 2012                                                              #
-# Version: 0.9.2                                                                    #
+# Date: Aug 17th, 2012                                                              #
+# Version: 0.9.4                                                                    #
 #-----------------------------------------------------------------------------------#
 
 ## Main function
-tiger.generator <- function(n = 200, d = 50, graph = "random", v = NULL, u = NULL, g = NULL, prob = NULL, vis = FALSE, verbose = TRUE){	
+tiger.generator <- function(n = 200, d = 50, graph = "random", v = NULL, u = NULL, g = NULL, 
+                            prob = NULL, seed = NULL, vis = FALSE, scale = FALSE, verbose = TRUE){	
   gcinfo(FALSE)
   if(verbose) cat("Generating data from the multivariate normal distribution with the", graph,"graph structure....")
+  
+  if(is.null(seed)) seed = 1
+  set.seed(seed)
   if(is.null(g)){
     g = 1
     if(graph == "hub" || graph == "cluster"){
@@ -18,9 +22,39 @@ tiger.generator <- function(n = 200, d = 50, graph = "random", v = NULL, u = NUL
       if(d <= 40) g = 2
     }
     if(graph == "block"){
-      if(d > 100)  g = ceiling(d/20)
-      if(d <= 100) g = 5
+      g = ceiling(d/5)
     }
+  }
+  
+  if(is.logical(scale)){
+    if(scale==TRUE){
+      D=diag(d)
+      for (i in 1:d)
+        D[i,i] = (4*i+d-5)/(5*(d-1))
+      Ds=sqrt(D)
+    } else {
+      D = diag(d)
+      Ds = diag(d)
+    }
+  }
+  if(is.matrix(scale)){
+    is.diag = 1
+    tmpscale=scale
+    if(nrow(scale)!=ncol(scale) || nrow(scale)!=d)
+      is.diag = 0
+    if(length(which(tmpscale<0))!=0)
+      is.diag = 0
+    if(length(which(diag(tmpscale)==0))!=0)
+      is.diag = 0
+    diag(tmpscale)=0
+    if(length(which(diag(tmpscale)==0))!=0)
+      is.diag = 0
+    if(is.diag == 0){
+      cat("scale must be a d by d diagonal matrix with all positive entries ! \n")
+      return(NULL)
+    }
+    D=scale
+    Ds=sqrt(scale)
   }
   
   if(graph == "random"){
@@ -95,7 +129,7 @@ tiger.generator <- function(n = 200, d = 50, graph = "random", v = NULL, u = NUL
   if(graph == "scale-free"){
     if(is.null(u)) u = 0.1
     if(is.null(v)) v = 0.3
-    out = .C("SFGen",dd0=as.integer(2),dd=as.integer(d),G=as.integer(theta),package="tiger")
+    out = .C("SFGen",dd0=as.integer(2),dd=as.integer(d),G=as.integer(theta),seed=as.integer(seed),package="tiger")
     theta = matrix(as.numeric(out$G),d,d)
   }
   if(graph=="band"||graph=="cluster"||graph=="hub"||graph=="random"||graph=="scale-free") {
@@ -106,7 +140,10 @@ tiger.generator <- function(n = 200, d = 50, graph = "random", v = NULL, u = NUL
     diag(omega) = abs(min(eigen(omega)$values)) + 0.1 + u
     sigma = cov2cor(solve(omega))
     omega = solve(sigma)
+    omega=Ds%*%omega%*%Ds
+    sigma=solve(omega)
   }
+  
   # decay omega
   if (graph == "decay") {
     if(is.null(prob)) {
@@ -168,7 +205,7 @@ tiger.generator <- function(n = 200, d = 50, graph = "random", v = NULL, u = NUL
   # block omega
   if (graph == "block") {
     omega = matrix(0,nrow=d,ncol=d)
-    blocksize = g
+    blocksize = floor(d/g)
     nblock = floor(d/blocksize)
     res = d%%blocksize
     for(i in 1:nblock) {
@@ -185,8 +222,10 @@ tiger.generator <- function(n = 200, d = 50, graph = "random", v = NULL, u = NUL
   }
   
   if(graph=="decay"||graph=="dense"||graph=="sparse"||graph=="block"){
-    theta[which(omega>1e-3)] = 1
-    theta[row(theta)==col(theta)] = 0
+    
+    omega=Ds%*%omega%*%Ds
+    theta[which(omega>1e-2)] = 1
+    diag(theta) = 0
     sigma = solve(omega)
   }
   
@@ -213,7 +252,7 @@ tiger.generator <- function(n = 200, d = 50, graph = "random", v = NULL, u = NUL
   rm(vis,verbose)
   gc()
   
-  sim = list(data = x, sigma = sigma, sigmahat = sigmahat, omega = omega, theta = Matrix(theta,sparse = TRUE), sparsity= sum(theta)/(d*(d-1)), graph.type=graph)
+  sim = list(data = x, sigma = sigma, sigmahat = sigmahat, omega = omega, theta = Matrix(theta,sparse = TRUE), sparsity= sum(theta)/(d*(d-1)), graph.type=graph, prob = prob)
   class(sim) = "sim" 
   return(sim)
 }

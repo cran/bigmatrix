@@ -20,7 +20,7 @@ System reserved (No specific usage)
 
 \author{
 Xingguo Li, Tuo Zhao, Lie Wang and Han Liu \cr
-Maintainers: Xingguo Li <xingguo.leo@gmail.com>
+Maintainer: Xingguo Li <xingguo.leo@gmail.com>
 }
 \seealso{
 \code{\link{tiger}} and \code{\link{tiger.select}}

@@ -3,7 +3,8 @@
 \alias{tiger.tracel2}
 \alias{tiger.cv}
 \alias{part.cv}
-\alias{tiger.clime}
+\alias{tiger.clime.cdadm}
+\alias{tiger.clime.ladm}
 \alias{tiger.slasso}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{Internal tiger functions}
@@ -15,8 +16,9 @@ tiger.likelihood(Sigma, Omega)
 tiger.tracel2(Sigma, Omega)
 tiger.cv(obj, loss=c("likelihood", "tracel2"), fold=5)
 part.cv(n, fold)
-tiger.clime(Sigma, d, maxdf, lambda, rho, prec, verbose)
-tiger.slasso(data, lambda)
+tiger.clime.cdadm(Sigma, d, maxdf, lambda, rho, prec, max.ite, verbose)
+tiger.clime.ladm(Sigma, d, maxdf, lambda, rho, prec, max.ite, verbose)
+tiger.slasso(data, lambda, max.ite)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -31,6 +33,7 @@ tiger.slasso(data, lambda)
   \item{lambda}{Grid of non-negative values for the constraint parameter lambda.}
   \item{rho}{Value of augmented Lagrangian multipiler.}
   \item{prec}{Stopping criterion.}
+  \item{max.ite}{Maximal value of iterations.}
   \item{verbose}{Tracing information printing.}
   \item{data}{\code{n} by \code{d} data matrix. }
 }
@@ -44,7 +47,7 @@ tiger.slasso(data, lambda)
 
 \author{
 Xingguo Li, Tuo Zhao, Lie Wang and Han Liu \cr
-Maintainers: Xingguo Li <xingguo.leo@gmail.com>
+Maintainer: Xingguo Li <xingguo.leo@gmail.com>
 }
 %\note{
 %}

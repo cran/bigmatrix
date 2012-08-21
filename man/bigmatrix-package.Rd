@@ -5,25 +5,26 @@
 Tuning Insensitive Graph Estimation and Regression
 }
 \description{
-Solve for the precision matrix estimations with two different methods. The first is the tuning insensitive graph estimation and regression implemented with scaled Lasso. Another method is by estimating at a grid of values for the constrained lambda and the augmented Lagrangian multiplier rho based on constrained \eqn{\ell_1} minimization for sparse precision matrix estimation, which guarantees positive definite output by projected augmented Lagrangian method and further accelerates the algorithm via coordinate descent and active set methods.
+The package "bigmatrix" targets at high dimensional precision matrix estimation problem. We adopt two estimation procedures based column by column scheme: (1) Tuning Insensitive Graph Estimation and Regression (TIGER). (2) The Constrained L1 minimization for sparse precision Matrix Estimation (CLIME). Both TIGER and CLIME have better performance than graphical lasso in parameter estimation under the spectral norm. Moreover, TIGER is less sensitive to tuning parameter than graphical lasso. The algorithm is implemented based on Alternative Direction Method combined with coordinate descent, which scales up to large problems. The computation is memory-optimized using the sparse matrix output.
 }
 \details{
 \tabular{ll}{
 Package: \tab bigmatrix\cr
 Type: \tab Package\cr
-Version: \tab 0.9.2\cr
-Date: \tab 2012-08-03\cr
+Version: \tab 0.9.4\cr
+Date: \tab 2012-08-21\cr
 License: \tab GPL-2\cr
 }
 }
 
 \author{
 Xingguo Li, Tuo Zhao, Lie Wang and Han Liu \cr
-Maintainers: Xingguo Li <xingguo.leo@gmail.com>
+Maintainer: Xingguo Li <xingguo.leo@gmail.com>
 }
 \references{
-1. Jerome Friedman, Trevor Hastie and Rob Tibshirani. \emph{Regularization Paths for Generalized Linear Models via Coordinate Descent.} Journal of Statistical Software, 2010. \cr
-2. Tony Cai, Weidong Liu and Xi Luo. \emph{A constrained \eqn{\ell_1} minimization approach to sparse precision matrix estimation.} Journal of the American Statistical Association, 2011. 
+1. J. Friedman, T. Hastie and R. Tibshirani. Regularization Paths for Generalized Linear Models via Coordinate Descent. \emph{Journal of Statistical Software}, 2010. \cr
+2. T. Cai, W. Liu and X. Luo. A constrained \eqn{\ell_1} minimization approach to sparse precision matrix estimation. \emph{Journal of the American Statistical Association}, 2011. 
+3. H. Liu and L. Wang. TIGER: A tuning-insenstiive approach for optimally estimating large undirected graphs. \emph{Technical Report}, 2012.
 }
 
 \keyword{ package }
