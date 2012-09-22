@@ -9,11 +9,12 @@
 #----------------------------------------------------------------------------------#
 
 
-tiger.clime.ladm <- function(Sigma, d, maxdf, lambda, rho, prec, max.ite, verbose){
+tiger.clime.ladm <- function(Sigma, d, maxdf, lambda, rho, shrink, prec, max.ite, verbose){
   
   SS = Sigma%*%Sigma
   gamma = eigen(SS)$values[1]
   d_sq = d^2
+  lambda = lambda-shrink*prec
   nlambda = length(lambda)
   icov = array(0,dim=c(d,d,nlambda))
   ite = rep(0,d*nlambda)

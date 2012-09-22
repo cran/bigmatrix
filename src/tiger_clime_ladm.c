@@ -59,6 +59,7 @@ void tiger_clime_ladm(double * Sigma, double * SS, double * omg, double * x, int
             tmp_m = m*dim_sq+i*dim;
             max_dif = 1;
             while((gap_ext !=0 || max_dif > eps1) && ite_ext < max_ite1){ // && max_dif > eps
+            //while(ite_ext < max_ite1){ // && max_dif > eps
                 // update alpha
                 for(j=0; j<dim; j++){
                     S_omg[j]=0;

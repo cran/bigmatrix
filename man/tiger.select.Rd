@@ -42,13 +42,14 @@ If \code{verbose = FALSE}, tracing information printing is disabled. The default
 }
 
 \details{
-Stability approach to regularization selection (stars) is a natural way to select optimal regularization parameter for all three estimation methods. It selects the optimal graph by variability of subsamplings and tends to over-select edges in Gaussian graphical models. Besides selecting the regularization parameters, stars can also provide an additional estimated graph by merging the corresponding subsampled graphs using the frequency counts. K-fold cross validation is also provided for selecting the parameter \code{lambda}. Two losses are implemented currently for K-fold cross validation, which are
+Stability approach to regularization selection (stars) is a natural way to select optimal regularization parameter for all three estimation methods. It selects the optimal graph by variability of subsamplings and tends to over-select edges in Gaussian graphical models. Besides selecting the regularization parameters, stars can also provide an additional estimated graph by merging the corresponding subsampled graphs using the frequency counts. K-fold cross validation is also provided for selecting the parameter \code{lambda}. Two losses
 \deqn{
-\textrm{likelihood: } Tr[\Sigma \Omega] - \log|\Omega|
+likelihood: Tr(\Sigma \Omega) - \log|\Omega|
 }
 \deqn{
-\textrm{tracel2: } Tr[diag(\Sigma \Omega - I)^2].
+tracel2: Tr(diag(\Sigma \Omega - I)^2).
 }
+are implemented for K-fold cross validation.
 }
 
 \value{
@@ -97,11 +98,11 @@ Maintainer: Xingguo Li <xingguo.leo@gmail.com>
 
 \examples{
 #generate data
-L = tiger.generator(d = 50, graph="cluster")
+L = tiger.generator(d = 50, graph="hub")
 out1 = tiger(L$data)
 
 #model selection using stars
-out1.select2 = tiger.select(out1, criterion = "stars", stars.thresh = 0.1)
+out1.select2 = tiger.select(out1, criterion = "stars", stars.thresh = 0.05)
 plot(out1.select2)
 
 #model selection using cross validation

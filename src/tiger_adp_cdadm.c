@@ -3,16 +3,17 @@
 #include "math.h"
 #include "R.h"
 
-void tiger_clime_cdadm(double * Sigma, double * omg, double * x, int *dd, int * ite_cnt_ext, int * ite_cnt_int1, int * ite_cnt_int2, double * lambda, int *nnlambda, double * gamma, int * max_ite, int *col_cnz, int *row_idx, double * prec, int * verbose)
+void tiger_adp_cdadm(double * Sigma, double * wmat, double * omg, double * x, int *dd, int *nn, int * ite_cnt_ext, int * ite_cnt_int1, int * ite_cnt_int2, double * lambda, int *nnlambda, double * gamma, int * max_ite, int *col_cnz, int *row_idx, double * prec, int * verbose)
 {
     int i,j,k,m,dim,dim_sq,junk_a,size_a,size_a_pre,w_idx,rs_idx,nlambda;
     int ite_ext,ite_int1,ite_int2,gap_ext,max_ite1,max_ite2,max_ite3, cnz, tmp_m;
     double gap_int,ilambda,tmp1,tmp2,err1,err2,omg_2norm,mu_2norm,omg_dif,eps1,eps2,omg_temp,alp_dif,mu_dif,max_dif;
-    double omg_sum1, omg_sum2, omg_dif_sum1, omg_out1;
+    double omg_sum1, omg_sum2, omg_dif_sum1, omg_out1,ndata;
 
     dim = *dd;
     dim_sq = dim*dim;
     nlambda = *nnlambda;
+    ndata = *nn;
     double *omg0 = (double*) malloc(dim*sizeof(double));
     double *omg1 = (double*) malloc(dim*sizeof(double));
     int *idx_a = (int*) malloc(dim*sizeof(int)); //sizes of active sets
@@ -32,6 +33,7 @@ void tiger_clime_cdadm(double * Sigma, double * omg, double * x, int *dd, int * 
     double *y_i = (double*) malloc(dim*sizeof(double));
     double *SS = (double*) malloc(dim*dim*sizeof(double));
     double *Sy = (double*) malloc(dim*sizeof(double));
+    double *wlambda = (double*) malloc(dim*sizeof(double));
 
     max_ite1 = * max_ite;
     max_ite2 = 1e2;
@@ -47,7 +49,6 @@ void tiger_clime_cdadm(double * Sigma, double * omg, double * x, int *dd, int * 
                 SS[j*dim+i] += Sigma[k*dim+i]*Sigma[j*dim+k];
         }
         S_col[i] = SS[i*dim+i];
-        gamma_col[i] = *gamma/S_col[i];
     }
     for(i=0; i<dim; i++){
         for(j=0; j<dim; j++) {
@@ -56,6 +57,7 @@ void tiger_clime_cdadm(double * Sigma, double * omg, double * x, int *dd, int * 
             idx_i[j] = 1;
             alp[j] = 0;
             mu[j] = 0;
+            gamma_col[j] = (*gamma)*(wmat[i*dim+j])/S_col[j];
         }
         // idx_i[i] = 0;
         e_i[i] = 1;
@@ -67,9 +69,10 @@ void tiger_clime_cdadm(double * Sigma, double * omg, double * x, int *dd, int * 
                 //mu[j] = 0;
                 //omg0[j] = 0;
                 //idx_i[j] = 1;
+                wlambda[j] = wmat[i*dim+j]*lambda[m];
             }
             //size_a = 0;
-            ilambda = lambda[m];
+            //ilambda = lambda[m];
             ite_ext = 0;
             tmp_m = m*dim_sq+i*dim;
             max_dif = 1;
@@ -84,16 +87,16 @@ void tiger_clime_cdadm(double * Sigma, double * omg, double * x, int *dd, int * 
                     }
                     alp_tild[j]=e_i[j]-S_omg[j]-mu[j];
                 }
-                alp_dif = 0;
+                //alp_dif = 0;
                 for(j=0; j<dim; j++){
-                    if (alp_tild[j]<=-ilambda){
-                        alp[j]=-ilambda;
-                        alp_dif = fabs(alp_tild[j]+ilambda)>alp_dif ? fabs(alp_tild[j]+ilambda) : alp_dif;
+                    if (alp_tild[j]<=-wlambda[j]){
+                        alp[j]=-wlambda[j];
+                        //alp_dif = fabs(alp_tild[j]+ilambda)>alp_dif ? fabs(alp_tild[j]+ilambda) : alp_dif;
                     }
                     else {
-                        if (alp_tild[j]>=ilambda){
-                            alp[j] = ilambda;
-                            alp_dif = fabs(alp_tild[j]-ilambda)>alp_dif ? fabs(alp_tild[j]-ilambda) : alp_dif;
+                        if (alp_tild[j]>=wlambda[j]){
+                            alp[j] = wlambda[j];
+                            //alp_dif = fabs(alp_tild[j]-ilambda)>alp_dif ? fabs(alp_tild[j]-ilambda) : alp_dif;
                         }
                         else
                             alp[j] = alp_tild[j];
@@ -101,8 +104,9 @@ void tiger_clime_cdadm(double * Sigma, double * omg, double * x, int *dd, int * 
                 }
 
                 // update omega
-                for(j=0; j<dim; j++)
+                for(j=0; j<dim; j++){
                     y_i[j] = e_i[j]-alp[j]-mu[j];
+                }
                 for(j=0; j<dim; j++){
                     Sy[j] = 0;
                     omg_pre[j] = omg0[j];
@@ -247,4 +251,5 @@ void tiger_clime_cdadm(double * Sigma, double * omg, double * x, int *dd, int * 
     free(y_i);
     free(SS);
     free(Sy);
+    free(wlambda);
 }

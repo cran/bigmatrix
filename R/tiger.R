@@ -13,23 +13,25 @@ tiger <- function(data,
                   lambda.min.ratio = NULL,
                   rho = NULL,
                   method = "clime",
-                  alg = "cdadm",
+                  alg = "hybrid",
                   sym = "or",
+                  shrink = NULL,
                   prec = 1e-3,
                   max.ite = NULL,
+                  wmat = NULL,
                   standardize = FALSE,
                   correlation = FALSE,
                   perturb = TRUE,
                   verbose = TRUE)
 {
-  if(method!="clime" && method!="slasso") {
-    cat("method must be either \"clime\" or \"slasso\"\n")
+  if(method!="clime" && method!="slasso" && method!="adp") {
+    cat("method must be either \"clime\", \"slasso\" or \"adp\" \n")
     return(NULL)
   }
   
   if(method=="clime") {
-    if(alg!="cdadm" && alg!="ladm"){
-      cat("alg must be either \"cdadm\" or \"ladm\" when method is \"clime\".\n")
+    if(alg!="cdadm" && alg!="ladm" && alg!="hybrid"){
+      cat("alg must be either \"cdadm\", \"ladm\" or \"hybrid\" when method is \"clime\".\n")
       return(NULL)
     }
   }
@@ -61,9 +63,10 @@ tiger <- function(data,
       S = cor(data)
     else
       S = cov(data)
+    
+    if(!correlation)
+      S = S*(1-1/n)
   }
-  if(!correlation)
-    S = S*(1-1/n)
   
   if(!is.null(lambda)) nlambda = length(lambda)
   if(is.null(lambda))
@@ -94,25 +97,48 @@ tiger <- function(data,
   est$lambda = lambda
   est$nlambda = nlambda
   
-  if(method == "clime"){
-    if(is.null(max.ite))
-      max.ite=1e3
+  if(method == "clime" || method == "adp"){
+    if(method == "clime"){
+      if(is.null(max.ite)){
+        if(alg=="cdadm") max.ite=1e2
+        else max.ite=1e3
+      }
+    }
     if(is.null(rho))
       rho = sqrt(d)
     if (is.logical(perturb)) {
       if (perturb) { 
         eigvals = eigen(S, only.values=T)$values
-        perturb = max(max(max(eigvals) - d*min(eigvals), 0)/(d-1), 1/n)
+        #perturb = max(max(max(eigvals) - d*min(eigvals), 0)/(d-1), 1/n)
+        perturb = 1/n
       } else {
         perturb = 0
       }
     }
     S = S + diag(d)*perturb
-    maxdf = min(n,d)
-    if(alg=="cdadm")
-      re_tiger = tiger.clime.cdadm(S, d, maxdf, lambda, rho, prec, max.ite, verbose)
-    else
-      re_tiger = tiger.clime.ladm(S, d, maxdf, lambda, rho, prec, max.ite, verbose)
+    maxdf = max(n,d)
+    if(method == "clime"){
+      if(is.null(shrink)) shrink=1.5
+      if(alg=="cdadm")
+        re_tiger = tiger.clime.cdadm(S, d, maxdf, lambda, rho, shrink, prec, max.ite, verbose)
+      if(alg=="hybrid")
+        re_tiger = tiger.clime.hadm(S, d, maxdf, lambda, rho, shrink, prec, max.ite, verbose)
+      if(alg=="ladm")
+        re_tiger = tiger.clime.ladm(S, d, maxdf, lambda, rho, shrink, prec, max.ite, verbose)
+    }
+    if(method == "adp"){
+      if(is.null(shrink)) shrink=0
+      if(is.null(max.ite)){
+        max.ite=3e2
+      }
+      if(is.null(wmat)){
+        if(rankMatrix(S)<d)
+          S = S + diag(d)*1/n
+        wmat = 1/(abs(solve(S))+1/n)
+      }
+      re_tiger = tiger.adp.cdadm(S, wmat, n, d, maxdf, lambda, rho, shrink, prec, max.ite, verbose)
+      est$wmat = wmat
+    }
     est$ite = re_tiger$ite
     
     for(j in 1:d) {
@@ -146,6 +172,7 @@ tiger <- function(data,
     rm(G)
     est$icov = re_tiger$icov
     est$icov1 = re_tiger$icov1
+    est$sigma = S
   }
   
   if (method == "slasso") {
