@@ -3,7 +3,7 @@
 #include "math.h"
 #include "R.h"
 
-void tiger_clime_cdadm(double * Sigma, double * omg, double * x, int *dd, int * ite_cnt_ext, int * ite_cnt_int1, int * ite_cnt_int2, double * lambda, int *nnlambda, double * gamma, int * max_ite, int *col_cnz, int *row_idx, double * prec, int * verbose)
+void tiger_clime_cdadm(double * Sigma, double * omg, double * x, int *dd, int * ite_cnt_ext, int * ite_cnt_int1, int * ite_cnt_int2, double * lambda, int *nnlambda, double * gamma, int * max_ite, int *col_cnz, int *row_idx, double * prec)
 {
     int i,j,k,m,dim,dim_sq,junk_a,size_a,size_a_pre,w_idx,rs_idx,nlambda;
     int ite_ext,ite_int1,ite_int2,gap_ext,max_ite1,max_ite2,max_ite3, cnz, tmp_m;

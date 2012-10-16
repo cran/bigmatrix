@@ -9,7 +9,7 @@
 #----------------------------------------------------------------------------------#
 
 
-tiger.clime.ladm <- function(Sigma, d, maxdf, lambda, rho, shrink, prec, max.ite, verbose){
+tiger.clime.ladm <- function(Sigma, d, maxdf, lambda, rho, shrink, prec, max.ite){
   
   SS = Sigma%*%Sigma
   gamma = eigen(SS)$values[1]
@@ -23,8 +23,6 @@ tiger.clime.ladm <- function(Sigma, d, maxdf, lambda, rho, shrink, prec, max.ite
   row_idx = rep(0,d*maxdf*nlambda)
   icov_list = vector("list", nlambda)
   icov_list1 = vector("list", nlambda)
-  if (verbose) verbose=1
-  else verbose=0
   str=.C("tiger_clime_ladm", as.double(Sigma), as.double(SS), as.double(icov), as.double(x), 
          as.integer(d), as.integer(ite), as.double(lambda), as.integer(nlambda), 
          as.double(gamma), as.integer(max.ite), as.double(rho), as.integer(col_cnz), 

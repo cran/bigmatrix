@@ -6,14 +6,14 @@
 TIGER: Tuning-Insensitive Graph Estimation and Regression
 }
 \description{
-The package "bigmatrix" estimates high dimensional precision matrices for Gaussian graphical models. We adopt two estimation procedures based column by column regression: (1) Tuning-Insensitive Graph Estimation and Regression (TIGER). (2) The Constrained L1 Minimization for Sparse Precision Matrix Estimation (CLIME). The optimization algorithm for CLIME is based on alternative direction method combined with coordinate decent. The computation is memory-optimized using the sparse matrix output.
+The package "bigmatrix" estimates high dimensional precision matrices for Gaussian graphical models. We adopt three estimation procedures based on column by column regression: (1) Tuning-Insensitive Graph Estimation and Regression (TIGER); (2) The Constrained L1 Minimization for Sparse Precision Matrix Estimation (CLIME); (3) Adaptive CLIME for Sparse Precision Matrix Estimation (ADP). The optimization algorithms for all three methods are implemented based on Alternative Direction Method combined with coordinate descent. The computation is memory-optimized using the sparse matrix output.
 }
 \details{
 \tabular{ll}{
 Package: \tab bigmatrix\cr
 Type: \tab Package\cr
-Version: \tab 0.9.5\cr
-Date: \tab 2012-08-23\cr
+Version: \tab 0.9.6\cr
+Date: \tab 2012-10-16\cr
 License: \tab GPL-2\cr
 }
 }

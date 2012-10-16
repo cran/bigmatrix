@@ -9,7 +9,7 @@
 #----------------------------------------------------------------------------------#
 
 
-tiger.clime.hadm <- function(Sigma, d, maxdf, lambda, rho, shrink, prec, max.ite, verbose){
+tiger.clime.hadm <- function(Sigma, d, maxdf, lambda, rho, shrink, prec, max.ite){
   
   gamma = 1/rho
   d_sq = d^2
@@ -27,12 +27,10 @@ tiger.clime.hadm <- function(Sigma, d, maxdf, lambda, rho, shrink, prec, max.ite
   icov_list1 = vector("list", nlambda)
   SS = Sigma%*%Sigma
   gamma2 = eigen(SS)$values[1]
-  if (verbose) verbose=1
-  else verbose=0
   str=.C("tiger_clime_hadm", as.double(Sigma), as.double(SS), as.double(icov), as.double(x), as.integer(d), 
          as.integer(ite_ext), as.integer(ite_ext2), as.integer(ite_int1), as.integer(ite_int2),as.double(lambda), 
          as.integer(nlambda), as.double(gamma), as.double(gamma2), as.integer(max.ite), as.double(rho), as.integer(col_cnz), 
-         as.integer(row_idx), as.double(prec), as.integer(verbose), PACKAGE="bigmatrix")
+         as.integer(row_idx), as.double(prec), PACKAGE="bigmatrix")
   for(i in 1:nlambda){
     icov_i = matrix(unlist(str[3])[((i-1)*d_sq+1):(i*d_sq)], byrow = FALSE, ncol = d)
     icov_list1[[i]] = icov_i

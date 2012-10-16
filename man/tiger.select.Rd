@@ -11,7 +11,8 @@ Implements the regularization parameter selection for high dimensional undirecte
 
 \usage{
 tiger.select(est, criterion = "stars", stars.subsample.ratio = NULL, 
-stars.thresh = 0.1,rep.num = 20, fold = 5, loss="likelihood", verbose = TRUE)
+             stars.thresh = 0.1,rep.num = 20, fold = 5, 
+             loss="likelihood", verbose = TRUE)
 }
 
 \arguments{

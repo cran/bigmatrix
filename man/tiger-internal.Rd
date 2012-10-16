@@ -7,7 +7,7 @@
 \alias{tiger.clime.ladm}
 \alias{tiger.clime.hadm}
 \alias{tiger.adp.cdadm}
-\alias{tiger.slasso}
+\alias{tiger.slasso.cdadm}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{Internal tiger functions}
 \description{
@@ -18,11 +18,11 @@ tiger.likelihood(Sigma, Omega)
 tiger.tracel2(Sigma, Omega)
 tiger.cv(obj, loss=c("likelihood", "tracel2"), fold=5)
 part.cv(n, fold)
-tiger.clime.cdadm(Sigma, d, maxdf, lambda, rho, shrink, prec, max.ite, verbose)
-tiger.clime.ladm(Sigma, d, maxdf, lambda, rho, shrink, prec, max.ite, verbose)
-tiger.clime.hadm(Sigma, d, maxdf, lambda, rho, shrink, prec, max.ite, verbose)
-tiger.adp.cdadm(Sigma, wmat, n, d, maxdf, lambda, rho, shrink, prec, max.ite, verbose)
-tiger.slasso(data, lambda, max.ite)
+tiger.clime.cdadm(Sigma, d, maxdf, lambda, rho, shrink, prec, max.ite)
+tiger.clime.ladm(Sigma, d, maxdf, lambda, rho, shrink, prec, max.ite)
+tiger.clime.hadm(Sigma, d, maxdf, lambda, rho, shrink, prec, max.ite)
+tiger.adp.cdadm(Sigma, wmat, n, d, maxdf, lambda, rho, shrink, prec, max.ite)
+tiger.slasso.cdadm(data, n, d, maxdf, lambda, shrink, prec, max.ite)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -39,7 +39,6 @@ tiger.slasso(data, lambda, max.ite)
   \item{rho}{Value of augmented Lagrangian multipiler.}
   \item{prec}{Stopping criterion.}
   \item{max.ite}{Maximal value of iterations.}
-  \item{verbose}{Tracing information printing.}
   \item{wmat}{Weight matrix for adaptive Lasso. It is only used when \code{method="adp"}.}
   \item{data}{\code{n} by \code{d} data matrix. }
 }

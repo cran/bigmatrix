@@ -9,7 +9,7 @@
 #----------------------------------------------------------------------------------#
 
 
-tiger.clime.cdadm <- function(Sigma, d, maxdf, lambda, rho, shrink, prec, max.ite, verbose){
+tiger.clime.cdadm <- function(Sigma, d, maxdf, lambda, rho, shrink, prec, max.ite){
   
   gamma = 1/rho
   d_sq = d^2
@@ -24,12 +24,10 @@ tiger.clime.cdadm <- function(Sigma, d, maxdf, lambda, rho, shrink, prec, max.it
   row_idx = rep(0,d*maxdf*nlambda)
   icov_list = vector("list", nlambda)
   icov_list1 = vector("list", nlambda)
-  if (verbose) verbose=1
-  else verbose=0
   str=.C("tiger_clime_cdadm", as.double(Sigma), as.double(icov), as.double(x), as.integer(d), 
          as.integer(ite_ext), as.integer(ite_int1), as.integer(ite_int2),as.double(lambda), 
          as.integer(nlambda), as.double(gamma), as.integer(max.ite), as.integer(col_cnz), 
-         as.integer(row_idx), as.double(prec), as.integer(verbose), PACKAGE="bigmatrix")
+         as.integer(row_idx), as.double(prec), PACKAGE="bigmatrix")
   for(i in 1:nlambda){
     icov_i = matrix(unlist(str[2])[((i-1)*d_sq+1):(i*d_sq)], byrow = FALSE, ncol = d)
     icov_list1[[i]] = icov_i
@@ -45,5 +43,5 @@ tiger.clime.cdadm <- function(Sigma, d, maxdf, lambda, rho, shrink, prec, max.it
   ite[[1]] = ite_ext
   ite[[2]] = ite_int1
   ite[[3]] = ite_int2
-  return(list(icov=icov_list, icov1=icov_list1,ite=ite, x=x, col_cnz=col_cnz, row_idx=row_idx))
+  return(list(icov=icov_list, icov1=icov_list1, ite=ite, x=x, col_cnz=col_cnz, row_idx=row_idx))
 }

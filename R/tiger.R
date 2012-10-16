@@ -13,7 +13,7 @@ tiger <- function(data,
                   lambda.min.ratio = NULL,
                   rho = NULL,
                   method = "clime",
-                  alg = "hybrid",
+                  alg = NULL,
                   sym = "or",
                   shrink = NULL,
                   prec = 1e-3,
@@ -25,19 +25,24 @@ tiger <- function(data,
                   verbose = TRUE)
 {
   if(method!="clime" && method!="slasso" && method!="adp") {
-    cat("method must be either \"clime\", \"slasso\" or \"adp\" \n")
+    cat("\"method\" must be either \"clime\", \"slasso\" or \"adp\" \n")
     return(NULL)
   }
   
   if(method=="clime") {
+    if(is.null(alg)) alg="hybrid"
     if(alg!="cdadm" && alg!="ladm" && alg!="hybrid"){
-      cat("alg must be either \"cdadm\", \"ladm\" or \"hybrid\" when method is \"clime\".\n")
+      cat("\"alg\" must be either \"cdadm\", \"ladm\" or \"hybrid\" when method is \"clime\".\n")
       return(NULL)
     }
+  } else {
+    if(alg != "cdadm" || is.null(alg))
+      cat(sprintf("\"alg\" is \"cdadm\" or leave it empty when method is \"%s\"", method))
   }
   
   n = nrow(data)
   d = ncol(data)
+  maxdf = max(n,d)
   est = list()
   est$cov.input = isSymmetric(data)
   if(est$cov.input)
@@ -78,7 +83,7 @@ tiger <- function(data,
       }
       else{
         lambda0=pi*sqrt(log(d)/(2*n))
-        lambda = seq(lambda0,0.2*lambda0,length=nlambda)
+        lambda = seq(lambda0,0.5*lambda0,length=nlambda)
       }
     }
     else {
@@ -110,95 +115,73 @@ tiger <- function(data,
       if (perturb) { 
         eigvals = eigen(S, only.values=T)$values
         #perturb = max(max(max(eigvals) - d*min(eigvals), 0)/(d-1), 1/n)
-        perturb = 1/n
+        perturb = 1/sqrt(n)
       } else {
         perturb = 0
       }
     }
     S = S + diag(d)*perturb
-    maxdf = max(n,d)
     if(method == "clime"){
       if(is.null(shrink)) shrink=1.5
       if(alg=="cdadm")
-        re_tiger = tiger.clime.cdadm(S, d, maxdf, lambda, rho, shrink, prec, max.ite, verbose)
+        re_tiger = tiger.clime.cdadm(S, d, maxdf, lambda, rho, shrink, prec, max.ite)
       if(alg=="hybrid")
-        re_tiger = tiger.clime.hadm(S, d, maxdf, lambda, rho, shrink, prec, max.ite, verbose)
+        re_tiger = tiger.clime.hadm(S, d, maxdf, lambda, rho, shrink, prec, max.ite)
       if(alg=="ladm")
-        re_tiger = tiger.clime.ladm(S, d, maxdf, lambda, rho, shrink, prec, max.ite, verbose)
+        re_tiger = tiger.clime.ladm(S, d, maxdf, lambda, rho, shrink, prec, max.ite)
     }
     if(method == "adp"){
       if(is.null(shrink)) shrink=0
-      if(is.null(max.ite)){
-        max.ite=3e2
-      }
+      if(is.null(max.ite)) max.ite=3e2
       if(is.null(wmat)){
-        if(rankMatrix(S)<d)
-          S = S + diag(d)*1/n
+        #         if(rankMatrix(S)<d)
+        #           S = S + diag(d)*1/n
         wmat = 1/(abs(solve(S))+1/n)
       }
-      re_tiger = tiger.adp.cdadm(S, wmat, n, d, maxdf, lambda, rho, shrink, prec, max.ite, verbose)
+      re_tiger = tiger.adp.cdadm(S, wmat, n, d, maxdf, lambda, rho, shrink, prec, max.ite)
       est$wmat = wmat
     }
-    est$ite = re_tiger$ite
-    
-    for(j in 1:d) {
-      if(re_tiger$col_cnz[j+1]>re_tiger$col_cnz[j])
-      {
-        idx.tmp = (re_tiger$col_cnz[j]+1):re_tiger$col_cnz[j+1]
-        ord = order(re_tiger$row_idx[idx.tmp])
-        re_tiger$row_idx[idx.tmp] = re_tiger$row_idx[ord + re_tiger$col_cnz[j]]
-        re_tiger$x[idx.tmp] = re_tiger$x[ord + re_tiger$col_cnz[j]]
-      }
-    }
-    G = new("dgCMatrix", Dim = as.integer(c(d*nlambda,d)), x = as.vector(re_tiger$x[1:re_tiger$col_cnz[d+1]]),
-            p = as.integer(re_tiger$col_cnz), i = as.integer(re_tiger$row_idx[1:re_tiger$col_cnz[d+1]]))
-    
-    est$beta = list()
-    est$path = list()
-    est$df = matrix(0,d,nlambda)
-    est$rss = matrix(0,d,nlambda)  
-    est$sparsity = rep(0,nlambda)  
-    for(i in 1:nlambda) {
-      est$beta[[i]] = G[((i-1)*d+1):(i*d),]
-      est$path[[i]] = abs(est$beta[[i]])
-      est$df[,i] = apply(sign(est$path[[i]]),2,sum)
-      
-      if(sym == "or")
-        est$path[[i]] = sign(est$path[[i]] + t(est$path[[i]]))
-      if(sym == "and")
-        est$path[[i]] = sign(est$path[[i]] * t(est$path[[i]]))
-      est$sparsity[i] = sum(est$path[[i]])/d/(d-1)
-    }
-    rm(G)
-    est$icov = re_tiger$icov
-    est$icov1 = re_tiger$icov1
-    est$sigma = S
   }
   
-  if (method == "slasso") {
-    if(is.null(max.ite))
-      max.ite=1e2
-    est$path = list()  
-    est$df = matrix(0,d,nlambda)
-    est$sparsity = rep(0,nlambda)
-    out = tiger.slasso(data, lambda=lambda, max.ite=max.ite)
-    tmp_icov = out$icov
-    est$ite = out$ite
-    for(i in 1:nlambda){
-      i_icov=tmp_icov[,,i]
-      est$icov1[[i]] = i_icov
-      est$icov[[i]] = i_icov*(abs(i_icov)<=abs(t(i_icov)))+t(i_icov)*(abs(t(i_icov))<abs(i_icov))
-      diag(i_icov) = 0
-      est$path[[i]] = abs(i_icov)
-      est$df[,i] = apply(sign(est$path[[i]]),2,sum)
-      if(sym == "or")
-        est$path[[i]] = sign(est$path[[i]] + t(est$path[[i]]))
-      if(sym == "and")
-        est$path[[i]] = sign(est$path[[i]] * t(est$path[[i]]))
-      est$sparsity[i] = sum(est$path[[i]])/d/(d-1)
+  if(method == "slasso"){
+    if(is.null(shrink)) shrink=0
+    if(is.null(max.ite)) max.ite=1e2
+    re_tiger = tiger.slasso.cdadm(data, n, d, maxdf, lambda, shrink, prec, max.ite)
+  }
+  est$ite = re_tiger$ite
+  
+  for(j in 1:d) {
+    if(re_tiger$col_cnz[j+1]>re_tiger$col_cnz[j])
+    {
+      idx.tmp = (re_tiger$col_cnz[j]+1):re_tiger$col_cnz[j+1]
+      ord = order(re_tiger$row_idx[idx.tmp])
+      re_tiger$row_idx[idx.tmp] = re_tiger$row_idx[ord + re_tiger$col_cnz[j]]
+      re_tiger$x[idx.tmp] = re_tiger$x[ord + re_tiger$col_cnz[j]]
     }
   }
+  G = new("dgCMatrix", Dim = as.integer(c(d*nlambda,d)), x = as.vector(re_tiger$x[1:re_tiger$col_cnz[d+1]]),
+          p = as.integer(re_tiger$col_cnz), i = as.integer(re_tiger$row_idx[1:re_tiger$col_cnz[d+1]]))
   
+  est$beta = list()
+  est$path = list()
+  est$df = matrix(0,d,nlambda)
+  est$rss = matrix(0,d,nlambda)  
+  est$sparsity = rep(0,nlambda)  
+  for(i in 1:nlambda) {
+    est$beta[[i]] = G[((i-1)*d+1):(i*d),]
+    est$path[[i]] = abs(est$beta[[i]])
+    est$df[,i] = apply(sign(est$path[[i]]),2,sum)
+    
+    if(sym == "or")
+      est$path[[i]] = sign(est$path[[i]] + t(est$path[[i]]))
+    if(sym == "and")
+      est$path[[i]] = sign(est$path[[i]] * t(est$path[[i]]))
+    est$sparsity[i] = sum(est$path[[i]])/d/(d-1)
+  }
+  rm(G)
+  est$icov = re_tiger$icov
+  est$icov1 = re_tiger$icov1
+  est$sigma = S
   est$data = data
   est$method = method
   est$sym = sym
